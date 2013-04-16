@@ -7,6 +7,7 @@ using namespace std;
 int main(int argc, char **argv) {
   if (argc != 3) {
     cerr << "usage: construct_index GRAPH INDEX" << endl;
+    exit(EXIT_FAILURE);
   }
 
   PrunedLandmarkLabeling<> pll;
