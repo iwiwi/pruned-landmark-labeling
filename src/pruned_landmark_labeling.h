@@ -414,7 +414,10 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
   ifs.read((char*)&num_v,   sizeof(num_v));
   ifs.read((char*)&num_bpr, sizeof(num_bpr));
   num_v_ = num_v;
-  if (ifs.bad() || kNumBitParallelRoots != num_bpr) return false;
+  if (ifs.bad() || kNumBitParallelRoots != num_bpr) {
+    num_v_ = 0;
+    return false;
+  }
 
   index_ = (index_t*)memalign(64, num_v * sizeof(index_t));
   if (index_ == NULL) {
