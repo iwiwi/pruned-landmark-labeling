@@ -44,6 +44,7 @@
 #include <set>
 #include <algorithm>
 #include <fstream>
+#include <utility>
 
 //
 // NOTE: Currently only unweighted and undirected graphs are supported.
@@ -80,6 +81,7 @@ class PrunedLandmarkLabeling {
   virtual ~PrunedLandmarkLabeling() {
     Free();
   }
+
  private:
   static const uint8_t INF8;  // For unreachable pairs
 
@@ -284,7 +286,8 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
   {
     // Sentinel (V, INF8) is added to all the vertices
     std::vector<std::pair<std::vector<int>, std::vector<uint8_t> > >
-        tmp_idx(V, make_pair(std::vector<int>(1, V), std::vector<uint8_t>(1, INF8)));
+        tmp_idx(V, make_pair(std::vector<int>(1, V),
+                             std::vector<uint8_t>(1, INF8)));
 
     std::vector<bool> vis(V);
     std::vector<int> que(V);
@@ -293,7 +296,8 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
     for (int r = 0; r < V; ++r) {
       if (usd[r]) continue;
       index_t &idx_r = index_[inv[r]];
-      const std::pair<std::vector<int>, std::vector<uint8_t> > &tmp_idx_r = tmp_idx[r];
+      const std::pair<std::vector<int>, std::vector<uint8_t> >
+          &tmp_idx_r = tmp_idx[r];
       for (size_t i = 0; i < tmp_idx_r.first.size(); ++i) {
         dst_r[tmp_idx_r.first[i]] = tmp_idx_r.second[i];
       }
@@ -306,7 +310,8 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
       for (int d = 0; que_t0 < que_h; ++d) {
         for (int que_i = que_t0; que_i < que_t1; ++que_i) {
           int v = que[que_i];
-          std::pair<std::vector<int>, std::vector<uint8_t> > &tmp_idx_v = tmp_idx[v];
+          std::pair<std::vector<int>, std::vector<uint8_t> >
+              &tmp_idx_v = tmp_idx[v];
           index_t &idx_v = index_[inv[v]];
 
           // Prefetch
@@ -322,7 +327,8 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
             if (td - 2 <= d) {
               td +=
                   (idx_r.bpspt_s[i][0] & idx_v.bpspt_s[i][0]) ? -2 :
-                  ((idx_r.bpspt_s[i][0] & idx_v.bpspt_s[i][1]) | (idx_r.bpspt_s[i][1] & idx_v.bpspt_s[i][0]))
+                  ((idx_r.bpspt_s[i][0] & idx_v.bpspt_s[i][1]) |
+                   (idx_r.bpspt_s[i][1] & idx_v.bpspt_s[i][0]))
                   ? -1 : 0;
               if (td <= d) goto pruned;
             }
@@ -345,7 +351,8 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
               vis[w] = true;
             }
           }
-       pruned:;
+       pruned:
+          {}
         }
 
         que_t0 = que_t1;
@@ -509,7 +516,7 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
     }
 
     int32_t s;
-    for (s = 1; idx.spt_v[s - 1] != num_v; ++s);  // Find the sentinel
+    for (s = 1; idx.spt_v[s - 1] != num_v; ++s) continue;  // Find the sentinel
     ofs.write((const char*)&s, sizeof(s));
     for (int i = 0; i < s; ++i) {
       int32_t l = idx.spt_v[i];

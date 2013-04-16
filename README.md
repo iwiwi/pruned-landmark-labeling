@@ -1,9 +1,21 @@
 Pruned Landmark Labeling
 ========================
 
-Pruned landmark labeling is a new shortest-path distance querying index for real-world graphs, such as social networks, web graphs, biological networks and computer networks.
+Pruned landmark labeling is a new shortest-path distance querying algorithm for real-world graphs, such as social networks, web graphs, biological networks and computer networks.
+
+The algorithm has the following advantages (for details, please see our paper):
+
+* **Fast** --- It answers distance queries in microseconds.
+* **Scalable** --- It can be applied to networks with hundreds of millions of edges.
+* **Exact** --- Unlike approximate methods, it always answers exactly correct distance.
+* (Almost) **Parameter Free** --- Unlike other state-of-the-art methods, it does not require any parameter tuning.
+
+Moreover, this implementation is:
+
+* **Easy to Use** --- By copying only one header file to your project, you can start using the index.
 
 ## Usage
+Given a graph, it first constructs an index. Then, using the index, it can quickly answer distance between two vertices.
 
 ### From CUI Interface
 
@@ -20,11 +32,17 @@ Pruned landmark labeling is a new shortest-path distance querying index for real
 ### From Your Program
 
     PrunedLandmarkLabeling<> pll;
-    pll.ConstructIndex(graph_file);
-    cout << pll.QueryDistance(0, 1) << endl;
+    pll.ConstructIndex(edge_list);
+    cout << pll.QueryDistance(1, 4) << endl;
 
-* Call `ConstructIndex` to construct an index from a graph.
+* Call `ConstructIndex` to construct an index from a graph (an edge list or a file).
 * Call `QueryDistance` to query distance between two vertices.
 * Call `LoadIndex` and `StoreIndex` to load and store an index.
 
 For further information, please see `pruned_landmark_labeling.h`, samples and tests.
+
+
+## References
+
+* Takuya Akiba, Yoichi Iwata, and Yuichi Yoshida, **Fast Exact Shortest-Path Distance Queries on Large Networks by Pruned Landmark Labeling**.
+In *SIGMOD 2013*, to appear.
