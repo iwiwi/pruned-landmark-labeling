@@ -5,14 +5,14 @@ Pruned landmark labeling is a new shortest-path distance querying algorithm for 
 
 The algorithm has the following advantages (for details, please see our paper):
 
-* **Fast** --- It answers distance queries in microseconds.
-* **Scalable** --- It can be applied to networks with hundreds of millions of edges.
-* **Exact** --- Unlike approximate methods, it always answers exactly correct distance.
-* (Almost) **Parameter Free** --- Unlike other state-of-the-art methods, it does not require any parameter tuning.
+* **Fast** --- it answers distance queries in microseconds,
+* **Scalable** --- it can be applied to networks with hundreds of millions of edges,
+* **Exact** --- unlike approximate methods, it always answers exactly correct distance, and
+* **Almost Parameter Free** --- unlike other state-of-the-art methods, it does not require any parameter tuning.
 
 Moreover, this implementation is:
 
-* **Easy to Use** --- By copying only one header file to your project, you can start using the index.
+* **Easy to Use** --- by copying only one header file to your project, you can start using the index.
 
 ## Usage
 Given a graph, it first constructs an index. Then, using the index, it can quickly answer distance between two vertices.
