@@ -33,6 +33,7 @@
 #include <malloc.h>
 #include <stdint.h>
 #include <xmmintrin.h>
+#include <sys/time.h>
 #include <climits>
 #include <iostream>
 #include <sstream>
@@ -70,8 +71,12 @@ class PrunedLandmarkLabeling {
   bool StoreIndex(std::ostream &ofs);
   bool StoreIndex(const char *filename);
 
+  int GetNumVertices() { return num_v_; }
   void Free();
-  PrunedLandmarkLabeling() : num_v_(0), index_(NULL) {}
+  void PrintStatistics();
+
+  PrunedLandmarkLabeling()
+      : num_v_(0), index_(NULL), time_load_(0), time_indexing_(0) {}
   virtual ~PrunedLandmarkLabeling() {
     Free();
   }
@@ -87,6 +92,15 @@ class PrunedLandmarkLabeling {
 
   int num_v_;
   index_t *index_;
+
+  double GetCurrentTimeSec() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec + tv.tv_usec * 1e-6;
+  }
+
+  // Statistics
+  double time_load_, time_indexing_;
 };
 
 template<int kNumBitParallelRoots>
@@ -118,6 +132,7 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
   // Prepare the adjacency list and index space
   //
   Free();
+  time_load_ = -GetCurrentTimeSec();
   int E = es.size();
   int &V = num_v_;
   V = 0;
@@ -130,6 +145,7 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
     adj[v].push_back(w);
     adj[w].push_back(v);
   }
+  time_load_ += GetCurrentTimeSec();
 
   index_ = (index_t*)memalign(64, V * sizeof(index_t));
   if (index_ == NULL) {
@@ -144,11 +160,15 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
   //
   // Order vertices by decreasing order of degree
   //
+  time_indexing_ = -GetCurrentTimeSec();
   std::vector<int> inv(V);  // new label -> old label
   {
     // Order
-    std::vector<std::pair<int, int> > deg(V);
-    for (int v = 0; v < V; ++v) deg[v] = std::make_pair(adj[v].size(), v);
+    std::vector<std::pair<float, int> > deg(V);
+    for (int v = 0; v < V; ++v) {
+      // We add a random value here to diffuse nearby vertices
+      deg[v] = std::make_pair(adj[v].size() + float(rand()) / RAND_MAX, v);
+    }
     std::sort(deg.rbegin(), deg.rend());
     for (int i = 0; i < V; ++i) inv[i] = deg[i].second;
 
@@ -354,6 +374,7 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
     }
   }
 
+  time_indexing_ += GetCurrentTimeSec();
   return true;
 }
 
@@ -511,6 +532,23 @@ void PrunedLandmarkLabeling<kNumBitParallelRoots>
   free(index_);
   index_ = NULL;
   num_v_ = 0;
+}
+
+template<int kNumBitParallelRoots>
+void PrunedLandmarkLabeling<kNumBitParallelRoots>
+::PrintStatistics() {
+  std::cout << "load time: "     << time_load_     << " seconds" << std::endl;
+  std::cout << "indexing time: " << time_indexing_ << " seconds" << std::endl;
+
+  double s = 0.0;
+  for (int v = 0; v < num_v_; ++v) {
+    for (int i = 0; index_[v].spt_v[i] != uint32_t(num_v_); ++i) {
+      ++s;
+    }
+  }
+  s /= num_v_;
+  std::cout << "bit-parallel label size: "   << kNumBitParallelRoots << std::endl;
+  std::cout << "average normal label size: " << s << std::endl;
 }
 
 #endif  // PRUNED_LANDMARK_LABELING_H_

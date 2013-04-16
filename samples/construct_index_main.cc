@@ -1,20 +1,23 @@
-#include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include "pruned_landmark_labeling.h"
+
+using namespace std;
 
 int main(int argc, char **argv) {
   if (argc != 3) {
-    fprintf(stderr, "usage: construct_index GRAPH INDEX\n");
-    exit(EXIT_FAILURE);
+    cerr << "usage: construct_index GRAPH INDEX" << endl;
   }
 
   PrunedLandmarkLabeling<> pll;
   if (!pll.ConstructIndex(argv[1])) {
-    fprintf(stderr, "error: Load or construction failed\n");
+    cerr << "error: Load or construction failed" << endl;
     exit(EXIT_FAILURE);
   }
+  pll.PrintStatistics();
+
   if (!pll.StoreIndex(argv[2])) {
-    fprintf(stderr, "error: Store failed\n");
+    cerr << "error: Store failed" << endl;
     exit(EXIT_FAILURE);
   }
   exit(EXIT_SUCCESS);
