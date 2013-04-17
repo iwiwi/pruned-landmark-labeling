@@ -3,6 +3,7 @@ Pruned Landmark Labeling
 
 Pruned landmark labeling is a new shortest-path distance querying algorithm for real-world graphs, such as social networks, web graphs, biological networks and computer networks.
 
+## Advantages
 The algorithm has the following advantages (for details, please see our paper):
 
 * **Fast** --- it answers distance queries in microseconds,
@@ -29,6 +30,7 @@ Given a graph, it first constructs an index. Then, using the index, it can quick
 * Execute `bin/query_distance` and write pairs of vertices to STDIN to query distance between pairs of vertices.
 
 
+
 ### From Your Program
 
     PrunedLandmarkLabeling<> pll;
@@ -41,6 +43,12 @@ Given a graph, it first constructs an index. Then, using the index, it can quick
 
 For further information, please see `pruned_landmark_labeling.h`, samples and tests.
 
+## Details
+
+* In a graph file, each line should contain two integers describing an edge (see `samples/graph_example.tsv`).
+* Vertices should be described by integers starting from zero.
+* Program `bin/query_distance` reads pairs of vertices until EOF, thus you can use it to process multiple pairs of vertices at once.
+* Execute `make test` to run tests (*google-gtest* is required).
 
 ## References
 
