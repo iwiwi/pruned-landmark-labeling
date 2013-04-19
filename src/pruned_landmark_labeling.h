@@ -216,6 +216,7 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
 
       int ns = 0;
       std::vector<int> vs;
+      sort(adj[r].begin(), adj[r].end());
       for (size_t i = 0; i < adj[r].size(); ++i) {
         int v = adj[r][i];
         if (!usd[v]) {
