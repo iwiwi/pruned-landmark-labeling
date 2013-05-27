@@ -389,6 +389,8 @@ bool PrunedLandmarkLabeling<kNumBitParallelRoots>
 template<int kNumBitParallelRoots>
 int PrunedLandmarkLabeling<kNumBitParallelRoots>
 ::QueryDistance(int v, int w) {
+  if (v >= num_v_ || w >= num_v_) return v == w ? 0 : INT_MAX;
+
   const index_t &idx_v = index_[v];
   const index_t &idx_w = index_[w];
   int d = INF8;

@@ -15,7 +15,7 @@ template<typename T> class PllTest : public testing::Test {};
 TYPED_TEST_CASE(PllTest, PllTypes);
 
 void BFS(const vector<pair<int, int> > &es, int s, vector<int> *distance) {
-  int V = 0;
+  int V = s + 1;
   for (size_t i = 0; i < es.size(); ++i) {
     V = max(V, max(es[i].first, es[i].second) + 1);
   }
@@ -63,6 +63,7 @@ void Test(int V, const vector<pair<int, int> > &es) {
   for (int v = 0; v < V; ++v) {
     vector<int> ds;
     BFS(es, v, &ds);
+    ds.resize(V, INT_MAX);
     for (int w = 0; w < V; ++w) {
       ASSERT_EQ(ds[w], pll1.QueryDistance(v, w)) << v << " -> " << w;
       ASSERT_EQ(ds[w], pll2.QueryDistance(v, w)) << v << " -> " << w;
@@ -103,7 +104,7 @@ TYPED_TEST(PllTest, AlmostEmpty) {
   es.push_back(make_pair(0, 3));
   es.push_back(make_pair(3, 6));
   es.push_back(make_pair(6, 0));
-  Test<TypeParam>(7, es);
+  Test<TypeParam>(10, es);
 }
 
 // Erdos-Renyi random graph
