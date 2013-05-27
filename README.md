@@ -52,5 +52,5 @@ For further information, please see `pruned_landmark_labeling.h`, samples and te
 
 ## References
 
-* Takuya Akiba, Yoichi Iwata, and Yuichi Yoshida, **Fast Exact Shortest-Path Distance Queries on Large Networks by Pruned Landmark Labeling**.
-In *SIGMOD 2013*, to appear. http://arxiv.org/abs/1304.4661
+* Takuya Akiba, Yoichi Iwata, and Yuichi Yoshida, **[Fast Exact Shortest-Path Distance Queries on Large Networks by Pruned Landmark Labeling](http://www-imai.is.s.u-tokyo.ac.jp/~takiba/papers/sigmod13_pll.pdf)**.
+In *SIGMOD 2013*, to appear.
