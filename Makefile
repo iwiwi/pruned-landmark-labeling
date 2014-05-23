@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -g -O3 -Wall -Wextra
+CXXFLAGS = -g -Wall -Wextra -O3
 
 
 all: bin bin/construct_index bin/query_distance bin/benchmark

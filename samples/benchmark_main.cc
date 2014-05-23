@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     cerr << "usage: construct_index GRAPH" << endl;
   }
 
-  PrunedLandmarkLabeling<> pll;
+  PrunedLandmarkLabeling<0> pll;
   if (!pll.ConstructIndex(argv[1])) {
     cerr << "error: Load or construction failed" << endl;
     exit(EXIT_FAILURE);
